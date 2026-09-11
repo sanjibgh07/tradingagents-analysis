@@ -1,7 +1,9 @@
 """Curated liquid universes for the goal-based portfolio mode.
 
-Market scope is deliberately limited to NSE, BSE and crypto. Equity tickers use
-Yahoo Finance's .NS/.BO suffixes; crypto is quoted in USD and sized in INR.
+Market scope is deliberately limited to Indian equities (NSE + BSE) and crypto.
+The public 'india' market key combines the two Indian exchange pools so the
+existing goal-desk pipeline remains compatible while reducing the universe to
+the intended markets.
 """
 
 NSE_UNIVERSE = {
@@ -20,7 +22,6 @@ NSE_UNIVERSE = {
     'TECHM.NS': 'Tech Mahindra', 'NESTLEIND.NS': 'Nestle India', 'TRENT.NS': 'Trent', 'BEL.NS': 'Bharat Electronics',
 }
 
-# Liquid large-cap BSE equivalents. Kept intentionally compact to limit data calls.
 BSE_UNIVERSE = {
     ticker.replace('.NS', '.BO'): name for ticker, name in NSE_UNIVERSE.items()
     if ticker not in {'DMART.NS', 'TMPV.NS'}
@@ -32,12 +33,12 @@ CRYPTO_UNIVERSE = {
     'DOGE-USD': 'Dogecoin', 'TRX-USD': 'TRON', 'LTC-USD': 'Litecoin', 'BCH-USD': 'Bitcoin Cash',
 }
 
-UNIVERSES = {'nse': NSE_UNIVERSE, 'bse': BSE_UNIVERSE, 'crypto': CRYPTO_UNIVERSE}
-BENCHMARKS = {'nse': '^NSEI', 'bse': '^BSESN', 'crypto': 'BTC-USD'}
-BENCHMARK_LABELS = {'nse': 'NIFTY 50 (^NSEI)', 'bse': 'SENSEX (^BSESN)', 'crypto': 'Bitcoin (BTC-USD)'}
-MARKET_LABELS = {'nse': 'Indian stocks (NSE)', 'bse': 'Indian stocks (BSE)', 'crypto': 'Crypto (USD quoted)'}
-
+INDIA_UNIVERSE = {**NSE_UNIVERSE, **BSE_UNIVERSE}
+UNIVERSES = {'india': INDIA_UNIVERSE, 'nse': NSE_UNIVERSE, 'bse': BSE_UNIVERSE, 'crypto': CRYPTO_UNIVERSE}
+BENCHMARKS = {'india': '^NSEI', 'nse': '^NSEI', 'bse': '^BSESN', 'crypto': 'BTC-USD'}
+BENCHMARK_LABELS = {'india': 'NIFTY 50 / SENSEX', 'nse': 'NIFTY 50 (^NSEI)', 'bse': 'SENSEX (^BSESN)', 'crypto': 'Bitcoin (BTC-USD)'}
+MARKET_LABELS = {'india': 'Indian stocks (NSE + BSE)', 'nse': 'Indian stocks (NSE)', 'bse': 'Indian stocks (BSE)', 'crypto': 'Crypto (USD quoted)'}
 
 def names_for(market):
-    """Ticker -> display-name mapping for nse, bse or crypto."""
+    """Ticker -> display-name mapping for india, nse, bse or crypto."""
     return UNIVERSES.get(market, {})
