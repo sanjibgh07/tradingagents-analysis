@@ -4,3 +4,5 @@ git+https://github.com/TauricResearch/TradingAgents.git
 langchain-openai
 langchain-google-genai
 requests
+# Optional quantitative validation / portfolio optimization:
+# skfolio
