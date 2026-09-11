@@ -23,7 +23,14 @@ def build_config():
     cfg=DEFAULT_CONFIG.copy(); cfg['llm_provider']='google'; cfg['deep_think_llm']='gemini-3.5-flash'; cfg['quick_think_llm']='gemini-3.1-flash-lite'; cfg['google_thinking_level']='minimal'; cfg['temperature']=0; cfg['max_tokens']=1500; cfg['llm_max_retries']=2; cfg['news_article_limit']=5; cfg['global_news_article_limit']=3; cfg['max_debate_rounds']=1; cfg['max_risk_discuss_rounds']=1; cfg['checkpoint_enabled']=True
     os.environ['GOOGLE_API_KEY']=st.secrets['GOOGLE_API_KEY']; return cfg
 
+def is_supported_ticker(ticker):
+    ticker=ticker.upper().strip()
+    return ticker.endswith('.NS') or ticker.endswith('.BO') or ticker.endswith('-USD')
+
 def run_deep_analysis(ticker,analysis_date):
+    ticker=ticker.upper().strip()
+    if not is_supported_ticker(ticker):
+        raise ValueError('Unsupported ticker. Use NSE (.NS), BSE (.BO), or crypto (-USD).')
     df=yf.download(ticker,period='3mo',progress=False,multi_level_index=False)
     if df is None or df.empty: raise ValueError('No market data found for '+ticker)
     tg=TradingAgentsGraph(debug=False,config=build_config())
@@ -122,11 +129,14 @@ elif menu=='🧠 Deep Analysis':
         st.caption('Supported market scope: NSE (.NS), BSE (.BO) and crypto (-USD).')
     if analyze:
         if not ticker: st.error('Please enter a ticker symbol.'); st.stop()
-        st.session_state.analysis_running=True
-        try:
-            final_state,decision=run_deep_analysis(ticker,d.strftime('%Y-%m-%d')); st.session_state.analysis_result={'ticker':ticker,'date':d.strftime('%d %b %Y'),'final_state':final_state,'decision':decision}
-        except Exception as exc: st.error(str(exc))
-        finally: st.session_state.analysis_running=False
+        if not is_supported_ticker(ticker):
+            st.error('Unsupported ticker. Use an NSE ticker ending in .NS, a BSE ticker ending in .BO, or a crypto ticker ending in -USD.')
+        else:
+            st.session_state.analysis_running=True
+            try:
+                final_state,decision=run_deep_analysis(ticker,d.strftime('%Y-%m-%d')); st.session_state.analysis_result={'ticker':ticker,'date':d.strftime('%d %b %Y'),'final_state':final_state,'decision':decision}
+            except Exception as exc: st.error(str(exc))
+            finally: st.session_state.analysis_running=False
 elif menu=='🎯 Goal Portfolio (beta)':
     from goaldesk.app_page import render_portfolio_page
     render_portfolio_page(); st.stop()
