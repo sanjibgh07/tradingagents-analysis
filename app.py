@@ -196,7 +196,7 @@ if result:
         brief = (seg[:end] if end != -1 else seg[:600]).strip()
     if not brief:
         brief = fd_text[:600].strip()
-    brief = brief.replace('**', '').replace('__', '').strip().strip('*').strip()
+    brief = brief.replace('**', '').replace('__', '').strip().strip('*').lstrip(':').strip()
     if brief:
         with st.container(border=True):
             st.caption('Desk brief — executive summary of the final decision')
