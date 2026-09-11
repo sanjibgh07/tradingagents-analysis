@@ -30,8 +30,9 @@ if st.button('Analyze'):
     cfg['llm_provider'] = 'openai'
     cfg['backend_url'] = 'https://api.groq.com/openai/v1'
     cfg['deep_think_llm'] = 'openai/gpt-oss-120b'
-    cfg['quick_think_llm'] = 'openai/gpt-oss-20b'
+    cfg['quick_think_llm'] = 'openai/gpt-oss-120b'
     cfg['max_debate_rounds'] = 1
+    cfg['temperature'] = 0
     os.environ['GROQ_API_KEY'] = st.secrets['GROQ_API_KEY']
     os.environ['OPENAI_API_KEY'] = st.secrets['GROQ_API_KEY']
     tg = TradingAgentsGraph(debug=False, config=cfg)
