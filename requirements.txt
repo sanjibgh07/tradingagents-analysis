@@ -2,3 +2,4 @@ streamlit
 yfinance
 git+https://github.com/TauricResearch/TradingAgents.git
 langchain-openai
+langchain-google-genai
