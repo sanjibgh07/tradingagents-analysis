@@ -7,10 +7,10 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from portfolio import allocate as al
-from portfolio import backtest as bt
-from portfolio import intent as it
-from portfolio import screener as sc
+from goaldesk import allocate as al
+from goaldesk import backtest as bt
+from goaldesk import intent as it
+from goaldesk import screener as sc
 
 
 def synth_df(n=130, start=100.0, drift=0.001, vol=0.02, seed=1):

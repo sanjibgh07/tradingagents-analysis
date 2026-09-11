@@ -6,7 +6,7 @@ educational, never a return promise.
 """
 import json
 
-from portfolio.intent import QUICK_MODEL
+from goaldesk.intent import QUICK_MODEL
 
 BENGALI_T = 'বাংলা'
 _LANG_HINT = (

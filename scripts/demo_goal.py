@@ -11,13 +11,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 if hasattr(sys.stdout, 'reconfigure'):          # Windows console → Bengali-safe
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
-from portfolio import allocate as al            # noqa: E402
-from portfolio import backtest as bt            # noqa: E402
-from portfolio import intent as it              # noqa: E402
-from portfolio import narrate as nr             # noqa: E402
-from portfolio import screener as sc            # noqa: E402
-from portfolio.data import fetch_fx_usdinr, fetch_history   # noqa: E402
-from portfolio.universe import BENCHMARKS, UNIVERSES        # noqa: E402
+from goaldesk import allocate as al            # noqa: E402
+from goaldesk import backtest as bt            # noqa: E402
+from goaldesk import intent as it              # noqa: E402
+from goaldesk import narrate as nr             # noqa: E402
+from goaldesk import screener as sc            # noqa: E402
+from goaldesk.data import fetch_fx_usdinr, fetch_history   # noqa: E402
+from goaldesk.universe import BENCHMARKS, UNIVERSES        # noqa: E402
 
 
 def main(argv):

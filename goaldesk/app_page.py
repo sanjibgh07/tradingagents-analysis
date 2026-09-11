@@ -8,13 +8,13 @@ import json
 import pandas as pd
 import streamlit as st
 
-from portfolio import allocate as al
-from portfolio import backtest as bt
-from portfolio import intent as it
-from portfolio import narrate as nr
-from portfolio import screener as sc
-from portfolio.data import fetch_fx_usdinr, fetch_history
-from portfolio.universe import BENCHMARKS, BENCHMARK_LABELS, MARKET_LABELS, UNIVERSES
+from goaldesk import allocate as al
+from goaldesk import backtest as bt
+from goaldesk import intent as it
+from goaldesk import narrate as nr
+from goaldesk import screener as sc
+from goaldesk.data import fetch_fx_usdinr, fetch_history
+from goaldesk.universe import BENCHMARKS, BENCHMARK_LABELS, MARKET_LABELS, UNIVERSES
 
 EXAMPLE_GOALS = [
     'আমি ₹20,000 ইন্ডিয়ান মার্কেট বা ক্রিপ্টো মার্কেটে invest করতে চাই — শর্ট '
