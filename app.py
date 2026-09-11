@@ -34,6 +34,10 @@ if st.button('Analyze'):
     cfg['max_debate_rounds'] = 1
     cfg['temperature'] = 0
     cfg['max_tokens'] = 1500
+    cfg['llm_max_retries'] = 2
+    cfg['news_article_limit'] = 5
+    cfg['global_news_article_limit'] = 3
+    cfg['max_risk_discuss_rounds'] = 1
     os.environ['GROQ_API_KEY'] = st.secrets['GROQ_API_KEY']
     os.environ['OPENAI_API_KEY'] = st.secrets['GROQ_API_KEY']
     tg = TradingAgentsGraph(debug=False, config=cfg)
