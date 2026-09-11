@@ -8,242 +8,130 @@ from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.default_config import DEFAULT_CONFIG
 from discovery import load_universe, rank_stocks
 
-st.set_page_config(
-    page_title='Sanjib Market Intelligence',
-    page_icon='📈',
-    layout='wide',
-    initial_sidebar_state='collapsed',
-)
+st.set_page_config(page_title='Sanjib Market Intelligence', page_icon='📈', layout='wide', initial_sidebar_state='collapsed')
 
 st.markdown('''
 <style>
-.stApp { background: radial-gradient(circle at 8% 0%, rgba(88,101,242,.12), transparent 28%), radial-gradient(circle at 92% 8%, rgba(0,200,170,.10), transparent 25%); }
-.block-container { max-width: 1320px; padding-top: 2rem; padding-bottom: 4rem; }
-.hero { padding:1.6rem 1.8rem 1.7rem; border:1px solid rgba(255,255,255,.10); border-radius:1.25rem; background:linear-gradient(135deg,rgba(30,34,48,.96),rgba(20,24,36,.88)); box-shadow:0 18px 55px rgba(0,0,0,.22); margin-bottom:1.25rem; }
-.eyebrow { font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; opacity:.62; font-weight:700; }
-.hero-title { font-size:clamp(2rem,4vw,3.25rem); line-height:1.05; font-weight:800; margin:.35rem 0 .6rem; }
-.hero-copy { font-size:1rem; opacity:.72; max-width:820px; line-height:1.6; }
-.status-row { display:flex; gap:.55rem; flex-wrap:wrap; margin-top:1rem; }
-.status-pill { display:inline-flex; align-items:center; gap:.4rem; padding:.42rem .7rem; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); font-size:.78rem; }
-.dot { width:7px; height:7px; border-radius:50%; background:#35d39a; display:inline-block; box-shadow:0 0 10px rgba(53,211,154,.65); }
-.section-label { font-size:.78rem; text-transform:uppercase; letter-spacing:.12em; font-weight:750; opacity:.55; margin:.25rem 0 .65rem; }
-.decision-card { padding:1.25rem 1.4rem; border-radius:1rem; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.035); margin:.8rem 0 1.25rem; }
-.decision-caption { font-size:.78rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; font-weight:700; }
-.decision-value { font-size:2.4rem; font-weight:850; margin-top:.2rem; }
-.decision-meta { opacity:.58; font-size:.86rem; margin-top:.15rem; }
-div[data-testid="stVerticalBlockBorderWrapper"] { border-radius:1rem; }
-div.stButton > button { border-radius:.7rem; min-height:2.7rem; font-weight:750; transition:all .18s ease; }
-div.stButton > button:hover { transform:translateY(-1px); }
-.footer { text-align:center; opacity:.42; font-size:.75rem; padding-top:1.5rem; }
-</style>
-''', unsafe_allow_html=True)
-
+.stApp{background:radial-gradient(circle at 5% 0%,rgba(0,150,255,.18),transparent 30%),radial-gradient(circle at 95% 5%,rgba(0,230,190,.12),transparent 26%),#06101d;color:#eef7ff}
+.block-container{max-width:1320px;padding-top:1.5rem;padding-bottom:4rem}
+.hero{padding:1.6rem 1.8rem 1.7rem;border:1px solid rgba(75,180,255,.22);border-radius:1.25rem;background:linear-gradient(135deg,rgba(8,35,65,.97),rgba(7,20,37,.95));box-shadow:0 18px 55px rgba(0,0,0,.28);margin-bottom:1.25rem}
+.eyebrow,.section-label{color:#69c8ff}.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;opacity:.85;font-weight:700}.hero-title{font-size:clamp(2rem,4vw,3.25rem);line-height:1.05;font-weight:800;margin:.35rem 0 .6rem}.hero-copy{font-size:1rem;opacity:.76;max-width:820px;line-height:1.6}.status-row{display:flex;gap:.55rem;flex-wrap:wrap;margin-top:1rem}.status-pill{padding:.42rem .7rem;border-radius:999px;background:rgba(40,160,255,.10);border:1px solid rgba(90,190,255,.18);font-size:.78rem}.dot{width:7px;height:7px;border-radius:50%;background:#35d39a;display:inline-block;box-shadow:0 0 10px rgba(53,211,154,.65)}
+.section-label{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;font-weight:750;opacity:.85;margin:.25rem 0 .65rem}.decision-card{padding:1.25rem 1.4rem;border-radius:1rem;border:1px solid rgba(75,180,255,.20);background:linear-gradient(135deg,rgba(15,55,90,.48),rgba(8,27,47,.60));margin:.8rem 0 1.25rem}.decision-caption{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:#69c8ff;opacity:.85;font-weight:700}.decision-value{font-size:2.4rem;font-weight:850;margin-top:.2rem}.decision-meta{opacity:.62;font-size:.86rem;margin-top:.15rem}div[data-testid="stVerticalBlockBorderWrapper"]{border-radius:1rem;border-color:rgba(75,180,255,.16);background:rgba(8,27,47,.40)}div.stButton>button{border-radius:.7rem;min-height:2.7rem;font-weight:750;border-color:rgba(75,180,255,.25)}div.stButton>button:hover{transform:translateY(-1px);border-color:#45bcff}.footer{text-align:center;opacity:.45;font-size:.75rem;padding-top:1.5rem}
+</style>''', unsafe_allow_html=True)
 
 def build_config():
-    cfg = DEFAULT_CONFIG.copy()
-    cfg['llm_provider'] = 'google'
-    cfg['deep_think_llm'] = 'gemini-3.5-flash'
-    cfg['quick_think_llm'] = 'gemini-3.1-flash-lite'
-    cfg['google_thinking_level'] = 'minimal'
-    cfg['temperature'] = 0
-    cfg['max_tokens'] = 1500
-    cfg['llm_max_retries'] = 2
-    cfg['news_article_limit'] = 5
-    cfg['global_news_article_limit'] = 3
-    cfg['max_debate_rounds'] = 1
-    cfg['max_risk_discuss_rounds'] = 1
-    cfg['checkpoint_enabled'] = True
-    os.environ['GOOGLE_API_KEY'] = st.secrets['GOOGLE_API_KEY']
-    return cfg
+    cfg=DEFAULT_CONFIG.copy(); cfg['llm_provider']='google'; cfg['deep_think_llm']='gemini-3.5-flash'; cfg['quick_think_llm']='gemini-3.1-flash-lite'; cfg['google_thinking_level']='minimal'; cfg['temperature']=0; cfg['max_tokens']=1500; cfg['llm_max_retries']=2; cfg['news_article_limit']=5; cfg['global_news_article_limit']=3; cfg['max_debate_rounds']=1; cfg['max_risk_discuss_rounds']=1; cfg['checkpoint_enabled']=True
+    os.environ['GOOGLE_API_KEY']=st.secrets['GOOGLE_API_KEY']; return cfg
 
-
-def run_deep_analysis(ticker, analysis_date):
-    df = yf.download(ticker, period='3mo', progress=False, multi_level_index=False)
-    if df is None or df.empty:
-        raise ValueError('No market data found for ' + ticker)
-
-    tg = TradingAgentsGraph(debug=False, config=build_config())
-    max_attempts = 10
-    for attempt in range(1, max_attempts + 1):
+def run_deep_analysis(ticker,analysis_date):
+    df=yf.download(ticker,period='3mo',progress=False,multi_level_index=False)
+    if df is None or df.empty: raise ValueError('No market data found for '+ticker)
+    tg=TradingAgentsGraph(debug=False,config=build_config())
+    for attempt in range(1,11):
         try:
-            with st.status(f'Agents working · pass {attempt}/{max_attempts}', expanded=True) as status:
-                final_state, decision = tg.propagate(ticker, analysis_date)
-                status.update(label='Analysis complete', state='complete')
-            return final_state, decision
+            with st.status(f'Agents working · pass {attempt}/10',expanded=True) as status:
+                final_state,decision=tg.propagate(ticker,analysis_date); status.update(label='Analysis complete',state='complete')
+            return final_state,decision
         except Exception as exc:
-            msg = str(exc)
-            if attempt < max_attempts and ('429' in msg or 'rate limit' in msg.lower()):
-                st.warning(f'Rate limit encountered. Waiting 65 s, then resuming from the last checkpoint (pass {attempt + 1}/{max_attempts}). Keep this tab open.')
-                time.sleep(65)
-                continue
+            msg=str(exc)
+            if attempt<10 and ('429' in msg or 'rate limit' in msg.lower()): st.warning(f'Rate limit encountered. Waiting 65 s, then resuming from checkpoint (pass {attempt+1}/10).'); time.sleep(65); continue
             raise
     raise RuntimeError('Analysis did not complete.')
 
-
-def show_deep_result(ticker, analysis_date, final_state, decision, section_prefix='02'):
-    dec = decision if isinstance(decision, str) else str(decision)
-    safe_dec = html.escape(dec)
-    low = dec.lower()
-    badge = '🟢' if 'buy' in low else ('🔴' if 'sell' in low else '🟡')
-
-    st.markdown(f'<div class="section-label">{section_prefix} · Intelligence result</div>', unsafe_allow_html=True)
-    st.markdown(f'''<div class="decision-card"><div class="decision-caption">Final portfolio signal</div><div class="decision-value">{badge} {safe_dec}</div><div class="decision-meta">{html.escape(ticker)} · analysis date {html.escape(analysis_date)} · generated by the multi-agent desk</div></div>''', unsafe_allow_html=True)
-
-    fd_text = str(final_state.get('final_trade_decision', ''))
-    fd_low = fd_text.lower()
-    brief = ''
+def show_deep_result(ticker,analysis_date,final_state,decision):
+    dec=decision if isinstance(decision,str) else str(decision); low=dec.lower(); badge='🟢' if 'buy' in low else ('🔴' if 'sell' in low else '🟡')
+    st.markdown('<div class="section-label">03 · Intelligence result</div>',unsafe_allow_html=True)
+    st.markdown(f'<div class="decision-card"><div class="decision-caption">Final portfolio signal</div><div class="decision-value">{badge} {html.escape(dec)}</div><div class="decision-meta">{html.escape(ticker)} · analysis date {html.escape(analysis_date)} · generated by the multi-agent desk</div></div>',unsafe_allow_html=True)
+    fd_text=str(final_state.get('final_trade_decision','')); fd_low=fd_text.lower(); brief=''
     if 'executive summary' in fd_low:
-        seg = fd_text[fd_low.index('executive summary') + len('executive summary'):].strip().lstrip(' :').strip()
-        end = seg.lower().find('investment thesis')
-        brief = (seg[:end] if end != -1 else seg[:600]).strip()
-    if not brief:
-        brief = fd_text[:600].strip()
-    brief = brief.replace('**', '').replace('__', '').strip().strip('*').lstrip(':').strip()
+        seg=fd_text[fd_low.index('executive summary')+len('executive summary'):].strip().lstrip(' :').strip(); end=seg.lower().find('investment thesis'); brief=(seg[:end] if end!=-1 else seg[:600]).strip()
+    if not brief: brief=fd_text[:600].strip()
+    brief=brief.replace('**','').replace('__','').strip().strip('*').lstrip(':').strip()
     if brief:
-        with st.container(border=True):
-            st.caption('Desk brief — executive summary of the final decision')
-            st.write(brief)
-
-    reports = [
-        ('Market', 'market_report', 'Price action, technical context and market regime.'),
-        ('Sentiment', 'sentiment_report', 'Investor mood, positioning and sentiment signals.'),
-        ('News', 'news_report', 'Recent company and market-moving news context.'),
-        ('Fundamentals', 'fundamentals_report', 'Business quality, financials and valuation context.'),
-        ('Bull / Bear Debate', 'investment_debate_state', 'Structured opposing-case investment debate.'),
-        ('Risk Judge', 'risk_debate_state', 'Risk assessment and challenge to the proposed trade.'),
-        ('Trader Plan', 'trader_investment_plan', 'Action plan derived from the research stack.'),
-        ('Final Decision', 'final_trade_decision', 'The final synthesized trade decision.'),
-    ]
-    st.markdown(f'<div class="section-label">{int(section_prefix.split(" · ")[0]) + 1 if section_prefix[0].isdigit() else 3:02d} · Research stack</div>', unsafe_allow_html=True)
-    expand_all = st.toggle('Expand all reports', key=f'expand_all_reports_{ticker}_{section_prefix}')
-    left, right = st.columns(2, gap='large')
-    for i, (title, key, description) in enumerate(reports):
-        text = str(final_state.get(key, 'N/A'))
-        words = len(text.split())
-        target = left if i % 2 == 0 else right
+        with st.container(border=True): st.caption('Desk brief — executive summary of the final decision'); st.write(brief)
+    reports=[('Market','market_report','Price action, technical context and market regime.'),('Sentiment','sentiment_report','Investor mood, positioning and sentiment signals.'),('News','news_report','Recent company and market-moving news context.'),('Fundamentals','fundamentals_report','Business quality, financials and valuation context.'),('Bull / Bear Debate','investment_debate_state','Structured opposing-case investment debate.'),('Risk Judge','risk_debate_state','Risk assessment and challenge to the proposed trade.'),('Trader Plan','trader_investment_plan','Action plan derived from the research stack.'),('Final Decision','final_trade_decision','The final synthesized trade decision.')]
+    st.markdown('<div class="section-label">04 · Research stack</div>',unsafe_allow_html=True); expand_all=st.toggle('Expand all reports',key=f'expand_all_reports_{ticker}')
+    left,right=st.columns(2,gap='large')
+    for i,(title,key,description) in enumerate(reports):
+        text=str(final_state.get(key,'N/A')); target=left if i%2==0 else right
         with target:
-            with st.expander(f'{title} · {words:,} words', expanded=(expand_all or title == 'Final Decision')):
-                st.caption(description)
-                st.write(text)
-
-    report_lines = ['SANJIB MARKET INTELLIGENCE', f'Ticker: {ticker}', f'Analysis date: {analysis_date}', f'Final portfolio signal: {dec}', '']
-    for title, key, description in reports:
-        report_lines.extend([f'## {title}', description, '', str(final_state.get(key, 'N/A')), ''])
-    report_text = '\n'.join(report_lines)
-    st.markdown('<div class="section-label">04 · Export</div>', unsafe_allow_html=True)
-    st.download_button('⬇ Download complete report (.md)', data=report_text, file_name=f'{ticker}_{analysis_date.replace(" ", "_")}_market_intelligence.md', mime='text/markdown', use_container_width=True)
-
+            with st.expander(f'{title} · {len(text.split()):,} words',expanded=(expand_all or title=='Final Decision')): st.caption(description); st.write(text)
+    lines=['SANJIB MARKET INTELLIGENCE',f'Ticker: {ticker}',f'Analysis date: {analysis_date}',f'Final portfolio signal: {dec}','']
+    for title,key,description in reports: lines.extend([f'## {title}',description,'',str(final_state.get(key,'N/A')),''])
+    st.markdown('<div class="section-label">05 · Export</div>',unsafe_allow_html=True)
+    st.download_button('⬇ Download complete report (.md)',data='\n'.join(lines),file_name=f'{ticker}_{analysis_date.replace(" ","_")}_market_intelligence.md',mime='text/markdown',use_container_width=True)
 
 if not st.session_state.get('auth'):
-    st.markdown('''<div class="hero"><div class="eyebrow">SANJIB'S MARKET INTELLIGENCE</div><div class="hero-title">Think clearly. Trade deliberately.</div><div class="hero-copy">A focused multi-agent research desk combining market data, sentiment, news, fundamentals, debate, risk and trader planning into one decision workflow.</div><div class="status-row"><span class="status-pill"><span class="dot"></span> Analysis engine online</span><span class="status-pill">✦ Gemini multi-agent</span><span class="status-pill">◈ Checkpoint enabled</span></div></div>''', unsafe_allow_html=True)
+    st.markdown('<div class="hero"><div class="eyebrow">SANJIB’S MARKET INTELLIGENCE</div><div class="hero-title">Think clearly. Trade deliberately.</div><div class="hero-copy">A focused multi-agent research desk combining market data, sentiment, news, fundamentals, debate, risk and trader planning into one decision workflow.</div><div class="status-row"><span class="status-pill"><span class="dot"></span> Analysis engine online</span><span class="status-pill">✦ Gemini multi-agent</span><span class="status-pill">◈ Checkpoint enabled</span></div></div>',unsafe_allow_html=True)
     with st.container(border=True):
-        st.subheader('Welcome back')
-        st.caption('Sign in to open your private analysis desk.')
-        user = st.text_input('Username')
-        pw = st.text_input('Password', type='password')
-        if st.button('Enter Analysis Desk', type='primary', use_container_width=True):
-            if user == st.secrets['APP_USERNAME'] and pw == st.secrets['APP_PASSWORD']:
-                st.session_state.auth = True
-                st.rerun()
-            else:
-                st.error('Wrong username or password')
-    st.markdown('<div class="footer">Sanjib Market Intelligence · Multi-agent decision support</div>', unsafe_allow_html=True)
-    st.stop()
+        st.subheader('Welcome back'); st.caption('Sign in to open your private analysis desk.'); user=st.text_input('Username'); pw=st.text_input('Password',type='password')
+        if st.button('Enter Analysis Desk',type='primary',use_container_width=True):
+            if user==st.secrets['APP_USERNAME'] and pw==st.secrets['APP_PASSWORD']: st.session_state.auth=True; st.rerun()
+            else: st.error('Wrong username or password')
+    st.markdown('<div class="footer">Sanjib Market Intelligence · Multi-agent decision support</div>',unsafe_allow_html=True); st.stop()
 
-_, header_right = st.columns([6, 1])
+_,header_right=st.columns([6,1])
 with header_right:
-    if st.button('↪ Logout', use_container_width=True):
-        st.session_state.auth = False
-        st.session_state.pop('analysis_running', None)
-        st.session_state.pop('analysis_result', None)
-        st.session_state.pop('discovery_result', None)
+    if st.button('↪ Logout',use_container_width=True):
+        st.session_state.auth=False
+        for k in ('analysis_running','analysis_result','discovery_result'): st.session_state.pop(k,None)
         st.rerun()
 
-st.markdown('''<div class="hero"><div class="eyebrow">SANJIB'S MARKET INTELLIGENCE · LIVE DESK</div><div class="hero-title">Discover. Research. Decide.</div><div class="hero-copy">Scan a market universe for quantitative opportunities, then send the strongest candidates through the existing eight-layer multi-agent research desk.</div><div class="status-row"><span class="status-pill"><span class="dot"></span> Engine ready</span><span class="status-pill">✦ Gemini</span><span class="status-pill">◈ Checkpoint protected</span><span class="status-pill">⌁ Discovery + 8 intelligence modules</span></div></div>''', unsafe_allow_html=True)
+st.markdown('<div class="hero"><div class="eyebrow">SANJIB’S MARKET INTELLIGENCE · LIVE DESK</div><div class="hero-title">Discover. Research. Decide.</div><div class="hero-copy">Scan a market universe for quantitative opportunities, then send the strongest candidates through the existing eight-layer multi-agent research desk.</div><div class="status-row"><span class="status-pill"><span class="dot"></span> Engine ready</span><span class="status-pill">✦ Gemini</span><span class="status-pill">◈ Checkpoint protected</span><span class="status-pill">⌁ Discovery + 8 intelligence modules</span></div></div>',unsafe_allow_html=True)
 
-mode = st.radio('Desk mode', ['Analyze a stock', 'Discover stocks'], horizontal=True)
+# Reliable dropdown navigation replacing the non-working radio navigation.
+menu=st.selectbox('Navigate',['📊 Market Dashboard','🔎 Discover Stocks','🧠 Deep Analysis'],index=0)
 
-if mode == 'Discover stocks':
-    st.markdown('<div class="section-label">01 · Stock discovery</div>', unsafe_allow_html=True)
+if menu=='🔎 Discover Stocks':
+    st.markdown('<div class="section-label">01 · Stock discovery</div>',unsafe_allow_html=True)
     with st.container(border=True):
-        c1, c2, c3 = st.columns([2.1, 1.3, 1.3], vertical_alignment='bottom')
-        with c1:
-            universe_name = st.selectbox('Market universe', ['NIFTY 50', 'NIFTY 500'])
-        with c2:
-            shortlist_size = st.slider('Candidates to return', 5, 25, 10)
-        with c3:
-            discover = st.button('🔎 Discover Stocks', type='primary', use_container_width=True, disabled=st.session_state.get('analysis_running', False))
-        st.caption('Fast deterministic screening uses momentum, trend, RSI quality, volume, relative strength and risk quality. Discovery Score is a shortlist score—not a guaranteed return or a BUY signal.')
-
+        c1,c2,c3=st.columns([2.1,1.3,1.3],vertical_alignment='bottom')
+        with c1: universe_name=st.selectbox('Market universe',['NIFTY 50','NIFTY 500'])
+        with c2: shortlist_size=st.slider('Candidates to return',5,25,10)
+        with c3: discover=st.button('🔎 Discover Stocks',type='primary',use_container_width=True,disabled=st.session_state.get('analysis_running',False))
+        st.caption('Fast deterministic screening ranks momentum, trend, RSI, volume, relative strength and risk quality. It is not a BUY signal.')
     if discover:
-        st.session_state.analysis_running = True
+        st.session_state.analysis_running=True
         try:
-            universe, source_status = load_universe(universe_name)
-            with st.status(f'Scanning {len(universe)} symbols…', expanded=True) as status:
-                ranked = rank_stocks(universe)
-                status.update(label='Discovery scan complete', state='complete')
-            st.session_state.discovery_result = {'universe': universe_name, 'source': source_status, 'ranked': ranked}
-        except Exception as exc:
-            st.error(f'Discovery failed: {exc}')
-        finally:
-            st.session_state.analysis_running = False
-
-    discovery = st.session_state.get('discovery_result')
+            universe,source_status=load_universe(universe_name)
+            with st.status(f'Scanning {len(universe)} symbols…',expanded=True) as status: ranked=rank_stocks(universe); status.update(label='Discovery scan complete',state='complete')
+            st.session_state.discovery_result={'universe':universe_name,'source':source_status,'ranked':ranked}
+        except Exception as exc: st.error(f'Discovery failed: {exc}')
+        finally: st.session_state.analysis_running=False
+    discovery=st.session_state.get('discovery_result')
     if discovery:
-        ranked = discovery['ranked']
-        st.info(f"Universe: {discovery['universe']} · Source: {discovery['source']} · {len(ranked)} symbols successfully scored.")
-        if ranked.empty:
-            st.error('No usable market data was returned. Try again later.')
-            st.stop()
+        ranked=discovery['ranked']; st.info(f"Universe: {discovery['universe']} · Source: {discovery['source']} · {len(ranked)} symbols successfully scored.")
+        if ranked.empty: st.error('No usable market data was returned. Try again later.')
+        else:
+            display=ranked.head(shortlist_size); st.markdown('<div class="section-label">02 · Ranked opportunities</div>',unsafe_allow_html=True); st.dataframe(display,use_container_width=True,hide_index=True)
+            with st.container(border=True):
+                st.subheader('Deep-analyse a candidate'); selected=st.selectbox('Candidate',display['Ticker'].tolist()); deep=st.button('🧠 Run 8-layer Deep Analysis',type='primary',use_container_width=True,disabled=st.session_state.get('analysis_running',False))
+            if deep:
+                st.session_state.analysis_running=True
+                try:
+                    selected_date=date.today()-timedelta(days=1); final_state,decision=run_deep_analysis(selected,selected_date.strftime('%Y-%m-%d')); st.session_state.analysis_result={'ticker':selected,'date':selected_date.strftime('%d %b %Y'),'final_state':final_state,'decision':decision}
+                except Exception as exc: st.error(f'Deep analysis failed: {exc}')
+                finally: st.session_state.analysis_running=False
 
-        display = ranked.head(shortlist_size).copy()
-        st.markdown('<div class="section-label">02 · Ranked opportunities</div>', unsafe_allow_html=True)
-        st.dataframe(display, use_container_width=True, hide_index=True)
-
-        st.caption('How to read this: Discovery Score ranks current quantitative characteristics across the scanned universe. It is intentionally separate from the AI final decision.')
-
-        choices = display['Ticker'].tolist()
-        with st.container(border=True):
-            st.subheader('Deep-analyse a candidate')
-            selected = st.selectbox('Candidate', choices)
-            deep = st.button('🧠 Run 8-layer Deep Analysis', type='primary', use_container_width=True, disabled=st.session_state.get('analysis_running', False))
-        if deep:
-            st.session_state.analysis_running = True
-            try:
-                selected_date = date.today() - timedelta(days=1)
-                final_state, decision = run_deep_analysis(selected, selected_date.strftime('%Y-%m-%d'))
-                st.session_state.analysis_result = {'ticker': selected, 'date': selected_date.strftime('%d %b %Y'), 'final_state': final_state, 'decision': decision}
-            except Exception as exc:
-                st.error(f'Deep analysis failed: {exc}')
-            finally:
-                st.session_state.analysis_running = False
-
-else:
-    st.markdown('<div class="section-label">01 · Analysis setup</div>', unsafe_allow_html=True)
+elif menu=='🧠 Deep Analysis':
+    st.markdown('<div class="section-label">01 · Analysis setup</div>',unsafe_allow_html=True)
     with st.container(border=True):
-        c1, c2, c3 = st.columns([2.2, 1.8, 1], vertical_alignment='bottom')
-        with c1:
-            ticker = st.text_input('Ticker symbol', 'AAPL', help='Enter a Yahoo Finance ticker such as AAPL, MSFT, NVDA or HDFCBANK.NS.').upper().strip()
-        with c2:
-            d = st.date_input('Analysis date', date.today() - timedelta(days=1))
-        with c3:
-            analyze = st.button('⚡ Run Analysis', type='primary', use_container_width=True, disabled=st.session_state.get('analysis_running', False))
-
+        c1,c2,c3=st.columns([2.2,1.8,1],vertical_alignment='bottom')
+        with c1: ticker=st.text_input('Ticker symbol','AAPL').upper().strip()
+        with c2: d=st.date_input('Analysis date',date.today()-timedelta(days=1))
+        with c3: analyze=st.button('⚡ Run Analysis',type='primary',use_container_width=True,disabled=st.session_state.get('analysis_running',False))
     if analyze:
-        if not ticker:
-            st.error('Please enter a ticker symbol.')
-            st.stop()
-        st.session_state.analysis_running = True
+        if not ticker: st.error('Please enter a ticker symbol.'); st.stop()
+        st.session_state.analysis_running=True
         try:
-            final_state, decision = run_deep_analysis(ticker, d.strftime('%Y-%m-%d'))
-            st.session_state.analysis_result = {'ticker': ticker, 'date': d.strftime('%d %b %Y'), 'final_state': final_state, 'decision': decision}
-        except Exception as exc:
-            st.error(str(exc))
-        finally:
-            st.session_state.analysis_running = False
+            final_state,decision=run_deep_analysis(ticker,d.strftime('%Y-%m-%d')); st.session_state.analysis_result={'ticker':ticker,'date':d.strftime('%d %b %Y'),'final_state':final_state,'decision':decision}
+        except Exception as exc: st.error(str(exc))
+        finally: st.session_state.analysis_running=False
+else:
+    st.markdown('<div class="section-label">01 · Market dashboard</div>',unsafe_allow_html=True)
+    with st.container(border=True):
+        st.subheader('Sanjib Market Intelligence'); st.write('Use the **Discover Stocks** menu to scan the market, or **Deep Analysis** for a specific ticker.')
 
-result = st.session_state.get('analysis_result')
-if result:
-    show_deep_result(result['ticker'], result['date'], result['final_state'], result['decision'])
-
-st.markdown('<div class="footer">Sanjib Market Intelligence · Gemini multi-agent research desk · Checkpoint protected · Discovery layer enabled</div>', unsafe_allow_html=True)
+result=st.session_state.get('analysis_result')
+if result: show_deep_result(result['ticker'],result['date'],result['final_state'],result['decision'])
+st.markdown('<div class="footer">Sanjib Market Intelligence · Gemini multi-agent research desk · Checkpoint protected · Discovery enabled</div>',unsafe_allow_html=True)
