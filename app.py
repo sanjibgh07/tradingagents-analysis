@@ -29,8 +29,8 @@ if st.button('Analyze'):
     cfg = DEFAULT_CONFIG.copy()
     cfg['llm_provider'] = 'openai'
     cfg['backend_url'] = 'https://api.groq.com/openai/v1'
-    cfg['deep_think_llm'] = 'llama-3.3-70b-versatile'
-    cfg['quick_think_llm'] = 'llama-3.1-8b-instant'
+    cfg['deep_think_llm'] = 'openai/gpt-oss-120b'
+    cfg['quick_think_llm'] = 'openai/gpt-oss-20b'
     cfg['max_debate_rounds'] = 1
     os.environ['GROQ_API_KEY'] = st.secrets['GROQ_API_KEY']
     os.environ['OPENAI_API_KEY'] = st.secrets['GROQ_API_KEY']
