@@ -33,7 +33,7 @@ if st.button('Analyze'):
     cfg['quick_think_llm'] = 'openai/gpt-oss-120b'
     cfg['max_debate_rounds'] = 1
     cfg['temperature'] = 0
-    cfg['max_tokens'] = 3000
+    cfg['max_tokens'] = 1500
     os.environ['GROQ_API_KEY'] = st.secrets['GROQ_API_KEY']
     os.environ['OPENAI_API_KEY'] = st.secrets['GROQ_API_KEY']
     tg = TradingAgentsGraph(debug=False, config=cfg)
