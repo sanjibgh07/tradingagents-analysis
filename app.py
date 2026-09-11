@@ -1,6 +1,7 @@
 import streamlit as st
 import yfinance as yf
 import os
+import time
 from datetime import date, timedelta
 from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.default_config import DEFAULT_CONFIG
@@ -40,10 +41,22 @@ if st.button('Analyze'):
     cfg['max_risk_discuss_rounds'] = 1
     os.environ['GROQ_API_KEY'] = st.secrets['GROQ_API_KEY']
     os.environ['OPENAI_API_KEY'] = st.secrets['GROQ_API_KEY']
+    cfg['checkpoint_enabled'] = True
     tg = TradingAgentsGraph(debug=False, config=cfg)
-    with st.status('Agents working... 5-15 minutes', expanded=True) as s:
-        final_state, decision = tg.propagate(ticker, d.strftime('%Y-%m-%d'))
-        s.update(label='Done!', state='complete')
+    max_attempts = 10
+    for attempt in range(1, max_attempts + 1):
+        try:
+            with st.status(f'Agents working (attempt {attempt}/{max_attempts})...', expanded=True) as s:
+                final_state, decision = tg.propagate(ticker, d.strftime('%Y-%m-%d'))
+                s.update(label='Done!', state='complete')
+            break
+        except Exception as e:
+            msg = str(e)
+            if attempt < max_attempts and ('429' in msg or 'rate limit' in msg.lower()):
+                st.warning(f'TPM limit hit. Waiting 65 s, then resuming from last checkpoint (attempt {attempt + 1} of {max_attempts}). Keep this tab open.')
+                time.sleep(65)
+                continue
+            raise
     dec = decision if isinstance(decision, str) else str(decision)
     st.metric('Decision', dec)
     for title, key in [('Market', 'market_report'), ('Sentiment', 'sentiment_report'),
