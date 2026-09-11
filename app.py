@@ -191,7 +191,7 @@ if result:
     brief = ''
     if 'executive summary' in fd_low:
         seg = fd_text[fd_low.index('executive summary') + len('executive summary'):]
-        seg = seg.lstrip(' :').strip()
+        seg = seg.strip().lstrip(' :').strip()
         end = seg.lower().find('investment thesis')
         brief = (seg[:end] if end != -1 else seg[:600]).strip()
     if not brief:
