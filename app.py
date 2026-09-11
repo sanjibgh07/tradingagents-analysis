@@ -80,7 +80,7 @@ with header_right:
 st.markdown('<div class="hero"><div class="eyebrow">SANJIB’S MARKET INTELLIGENCE · LIVE DESK</div><div class="hero-title">Discover. Research. Decide.</div><div class="hero-copy">Scan a market universe for quantitative opportunities, then send the strongest candidates through the existing eight-layer multi-agent research desk.</div><div class="status-row"><span class="status-pill"><span class="dot"></span> Engine ready</span><span class="status-pill">✦ Gemini</span><span class="status-pill">◈ Checkpoint protected</span><span class="status-pill">⌁ Discovery + 8 intelligence modules</span></div></div>',unsafe_allow_html=True)
 
 # Reliable dropdown navigation replacing the non-working radio navigation.
-menu=st.selectbox('Navigate',['📊 Market Dashboard','🔎 Discover Stocks','🧠 Deep Analysis'],index=0)
+menu=st.selectbox('Navigate',['📊 Market Dashboard','🔎 Discover Stocks','🧠 Deep Analysis','🎯 Goal Portfolio (beta)'],index=0)
 
 if menu=='🔎 Discover Stocks':
     st.markdown('<div class="section-label">01 · Stock discovery</div>',unsafe_allow_html=True)
@@ -127,6 +127,10 @@ elif menu=='🧠 Deep Analysis':
             final_state,decision=run_deep_analysis(ticker,d.strftime('%Y-%m-%d')); st.session_state.analysis_result={'ticker':ticker,'date':d.strftime('%d %b %Y'),'final_state':final_state,'decision':decision}
         except Exception as exc: st.error(str(exc))
         finally: st.session_state.analysis_running=False
+elif menu=='🎯 Goal Portfolio (beta)':
+    from goaldesk.app_page import render_portfolio_page
+
+    render_portfolio_page(); st.stop()
 else:
     st.markdown('<div class="section-label">01 · Market dashboard</div>',unsafe_allow_html=True)
     with st.container(border=True):
