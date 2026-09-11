@@ -185,6 +185,23 @@ if result:
     </div>
     ''', unsafe_allow_html=True)
 
+    # Desk brief — executive summary extracted from the final decision (UI-only string handling).
+    fd_text = str(final_state.get('final_trade_decision', ''))
+    fd_low = fd_text.lower()
+    brief = ''
+    if 'executive summary' in fd_low:
+        seg = fd_text[fd_low.index('executive summary') + len('executive summary'):]
+        seg = seg.lstrip(' :').strip()
+        end = seg.lower().find('investment thesis')
+        brief = (seg[:end] if end != -1 else seg[:600]).strip()
+    if not brief:
+        brief = fd_text[:600].strip()
+    if brief:
+        with st.container(border=True):
+            st.caption('Desk brief — executive summary of the final decision')
+            st.write(brief)
+
+
     reports = [
         ('Market', 'market_report', 'Price action, technical context and market regime.'),
         ('Sentiment', 'sentiment_report', 'Investor mood, positioning and sentiment signals.'),
@@ -197,13 +214,16 @@ if result:
     ]
 
     st.markdown('<div class="section-label">03 · Research stack</div>', unsafe_allow_html=True)
+    expand_all = st.toggle('Expand all reports', key='expand_all_reports')
     left, right = st.columns(2, gap='large')
     for i, (title, key, description) in enumerate(reports):
+        text = str(final_state.get(key, 'N/A'))
+        words = len(text.split())
         target = left if i % 2 == 0 else right
         with target:
-            with st.expander(title, expanded=(title == 'Final Decision')):
+            with st.expander(f'{title} · {words:,} words', expanded=(expand_all or title == 'Final Decision')):
                 st.caption(description)
-                st.write(str(final_state.get(key, 'N/A')))
+                st.write(text)
 
     st.markdown('<div class="section-label">04 · Export</div>', unsafe_allow_html=True)
     report_lines = [
