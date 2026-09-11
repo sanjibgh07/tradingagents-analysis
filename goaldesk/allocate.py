@@ -114,6 +114,8 @@ def build_portfolio(picks, amount, risk='medium', market='india', fx=1.0):
             continue
         if market == 'crypto':
             qty = round(alloc / entry, 6)
+            if qty * entry > alloc:                     # never overshoot the slice
+                qty = round((alloc - 1e-9) / entry, 6)
         else:
             qty = int(alloc // entry)
         if qty <= 0:
@@ -142,6 +144,6 @@ def build_portfolio(picks, amount, risk='medium', market='india', fx=1.0):
 
     invested = round(float(invested), 2)
     return {'positions': positions, 'invested': invested,
-            'cash_left': round(float(amount) - invested, 2),
+            'cash_left': round(max(0.0, float(amount) - invested), 2),
             'market': market, 'fx': fx}
 
