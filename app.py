@@ -28,20 +28,19 @@ if st.button('Analyze'):
         st.error('No data for ' + ticker)
         st.stop()
     cfg = DEFAULT_CONFIG.copy()
-    cfg['llm_provider'] = 'openai'
-    cfg['backend_url'] = 'https://api.groq.com/openai/v1'
-    cfg['deep_think_llm'] = 'openai/gpt-oss-120b'
-    cfg['quick_think_llm'] = 'openai/gpt-oss-120b'
-    cfg['max_debate_rounds'] = 1
+    cfg['llm_provider'] = 'google'
+    cfg['deep_think_llm'] = 'gemini-3.5-flash'
+    cfg['quick_think_llm'] = 'gemini-3.1-flash-lite'
+    cfg['google_thinking_level'] = 'minimal'
     cfg['temperature'] = 0
     cfg['max_tokens'] = 1500
     cfg['llm_max_retries'] = 2
     cfg['news_article_limit'] = 5
     cfg['global_news_article_limit'] = 3
+    cfg['max_debate_rounds'] = 1
     cfg['max_risk_discuss_rounds'] = 1
-    os.environ['GROQ_API_KEY'] = st.secrets['GROQ_API_KEY']
-    os.environ['OPENAI_API_KEY'] = st.secrets['GROQ_API_KEY']
     cfg['checkpoint_enabled'] = True
+    os.environ['GOOGLE_API_KEY'] = st.secrets['GOOGLE_API_KEY']
     tg = TradingAgentsGraph(debug=False, config=cfg)
     max_attempts = 10
     for attempt in range(1, max_attempts + 1):
