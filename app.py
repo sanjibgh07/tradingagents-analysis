@@ -79,17 +79,16 @@ with header_right:
 
 st.markdown('<div class="hero"><div class="eyebrow">SANJIB’S MARKET INTELLIGENCE · LIVE DESK</div><div class="hero-title">Discover. Research. Decide.</div><div class="hero-copy">Scan a market universe for quantitative opportunities, then send the strongest candidates through the existing eight-layer multi-agent research desk.</div><div class="status-row"><span class="status-pill"><span class="dot"></span> Engine ready</span><span class="status-pill">✦ Gemini</span><span class="status-pill">◈ Checkpoint protected</span><span class="status-pill">⌁ Discovery + 8 intelligence modules</span></div></div>',unsafe_allow_html=True)
 
-# Reliable dropdown navigation replacing the non-working radio navigation.
 menu=st.selectbox('Navigate',['📊 Market Dashboard','🔎 Discover Stocks','🧠 Deep Analysis','🎯 Goal Portfolio (beta)'],index=0)
 
 if menu=='🔎 Discover Stocks':
-    st.markdown('<div class="section-label">01 · Stock discovery</div>',unsafe_allow_html=True)
+    st.markdown('<div class="section-label">01 · Market discovery</div>',unsafe_allow_html=True)
     with st.container(border=True):
         c1,c2,c3=st.columns([2.1,1.3,1.3],vertical_alignment='bottom')
-        with c1: universe_name=st.selectbox('Market universe',['NIFTY 50','NIFTY 500'])
+        with c1: universe_name=st.selectbox('Market universe',['NSE — Liquid 50','BSE — Liquid 30','Crypto — Large Cap 12'])
         with c2: shortlist_size=st.slider('Candidates to return',5,25,10)
-        with c3: discover=st.button('🔎 Discover Stocks',type='primary',use_container_width=True,disabled=st.session_state.get('analysis_running',False))
-        st.caption('Fast deterministic screening ranks momentum, trend, RSI, volume, relative strength and risk quality. It is not a BUY signal.')
+        with c3: discover=st.button('🔎 Discover',type='primary',use_container_width=True,disabled=st.session_state.get('analysis_running',False))
+        st.caption('India + crypto only. Deterministic screening ranks momentum, trend, RSI, volume, relative strength and risk quality. It is not a BUY signal.')
     if discover:
         st.session_state.analysis_running=True
         try:
@@ -117,9 +116,10 @@ elif menu=='🧠 Deep Analysis':
     st.markdown('<div class="section-label">01 · Analysis setup</div>',unsafe_allow_html=True)
     with st.container(border=True):
         c1,c2,c3=st.columns([2.2,1.8,1],vertical_alignment='bottom')
-        with c1: ticker=st.text_input('Ticker symbol','AAPL').upper().strip()
+        with c1: ticker=st.text_input('Ticker symbol','RELIANCE.NS').upper().strip()
         with c2: d=st.date_input('Analysis date',date.today()-timedelta(days=1))
         with c3: analyze=st.button('⚡ Run Analysis',type='primary',use_container_width=True,disabled=st.session_state.get('analysis_running',False))
+        st.caption('Supported market scope: NSE (.NS), BSE (.BO) and crypto (-USD).')
     if analyze:
         if not ticker: st.error('Please enter a ticker symbol.'); st.stop()
         st.session_state.analysis_running=True
@@ -129,13 +129,12 @@ elif menu=='🧠 Deep Analysis':
         finally: st.session_state.analysis_running=False
 elif menu=='🎯 Goal Portfolio (beta)':
     from goaldesk.app_page import render_portfolio_page
-
     render_portfolio_page(); st.stop()
 else:
     st.markdown('<div class="section-label">01 · Market dashboard</div>',unsafe_allow_html=True)
     with st.container(border=True):
-        st.subheader('Sanjib Market Intelligence'); st.write('Use the **Discover Stocks** menu to scan the market, or **Deep Analysis** for a specific ticker.')
+        st.subheader('Sanjib Market Intelligence'); st.write('Use **Discover Stocks** for NSE, BSE or crypto screening, **Deep Analysis** for a specific supported ticker, or **Goal Portfolio** for a budget-based plan.')
 
 result=st.session_state.get('analysis_result')
 if result: show_deep_result(result['ticker'],result['date'],result['final_state'],result['decision'])
-st.markdown('<div class="footer">Sanjib Market Intelligence · Gemini multi-agent research desk · Checkpoint protected · Discovery enabled</div>',unsafe_allow_html=True)
+st.markdown('<div class="footer">Sanjib Market Intelligence · Gemini multi-agent research desk · Checkpoint protected · NSE + BSE + Crypto</div>',unsafe_allow_html=True)
